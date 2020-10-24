@@ -1,6 +1,6 @@
 {
-  "name": "electron-GitLocker",
-  "version": "1.0.0",
+  "name": "Electron_GitLocker",
+  "version": "0.0.1",
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "tutorial",
     "demo"
   ],
-  "author": "GitHub",
+  "author": "EvenZHAng",
   "license": "CC0-1.0",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
@@ -43,7 +43,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "electron_quick_start"
+            "name": "Electron_GitLocker"
           }
         },
         {
