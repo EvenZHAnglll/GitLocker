@@ -5,6 +5,9 @@
 // selectively enable features needed in the rendering
 // process.
 
+// const {ipcRenderer} = require('electron')
+
+
 class FileRecord {
     constructor(fileName, filePath, lock) {
         this.fileName = fileName;
@@ -89,3 +92,19 @@ document.querySelectorAll('.btn-unlock').forEach(element =>{
         console.log("click On Unlock", event.target.id, event)
     })
 })
+
+ipcRenderer.on('got-files-in-out',(event,files)=>{
+    console.log(files)
+    document.getElementById('data-div').innerHTML= files
+})
+
+ipcRenderer.send('get-files-in-out')
+
+
+
+run_script('cd C:\\Users\\Even\\Desktop\\GitHub\\electron-api-demos-master\n ls', [''] , (output) => {
+    console.log("run_script:",output);
+});
+
+child_process.exec('git status',{cwd:'C:\\Users\\Even\\GitRepos\\Real-Time-Fluid'},(error,stdout,stderr)=>{console.log(stdout)})
+child_process.exec('git lfs locks',{cwd:'C:\\Users\\Even\\Desktop\\GitHub\\GitLocker'},(error,stdout,stderr)=>{console.log(stdout)})
