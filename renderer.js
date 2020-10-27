@@ -104,18 +104,28 @@ function addNewLine(line){
 // });
 
 //child_process.exec('git status',{cwd:repoPath},(error,stdout,stderr)=>{console.log(stdout)})
+var lockedFileNames = []
 
 child_process.exec('git lfs locks',{cwd:repoPath},(error,stdout,stderr)=>{
     console.log(stdout)
     arrayOfLocks = stdout.split("\n")
+    
     console.log(arrayOfLocks)
     arrayOfLocks.forEach((element,index ) =>{
         console.log(element)
+        element = element.replace("	","//")
+        element = element.replace("	","//")
         element = element.replace(/\s/g,"")
-        arrayOfLocks[index] = element.split("	")
+        arrayOfLocks[index] = element.split("//")
+        lockedFileNames.push(arrayOfLocks[index][0])
     })
+    arrayOfLocks.pop()
     console.log(arrayOfLocks)
+    updateFileRecords()
 })
+
+//"README.md         EvenZHAnglllID:441708", "css/searchicon.png	EvenZHAnglll	ID:441678", "preload.js        	EvenZHAnglll	ID:436008"
+
 
 
 // get file list
@@ -139,29 +149,37 @@ const getAllFiles = function(dirPath, arrayOfFiles) {
     return arrayOfFiles
 }
 
+function updateFileRecords () {
+    var fileList = getAllFiles(repoPath) 
+    var fileListRelative = []
+    fileList.forEach(element => {
+        fileListRelative.push(element.replace(repoPath,"."))
+    });
+    console.log(fileListRelative)
 
-var fileList = getAllFiles(repoPath) 
-var fileListRelative = []
-fileList.forEach(element => {
-    fileListRelative.push(element.replace(repoPath,"."))
-});
-console.log(fileListRelative)
-
-fileListRelative.forEach(file => {
-    addNewLine(new FileRecord(file.split("\\").pop(),file,"-",true))
-}) 
-
+    fileListRelative.forEach(file => {
+        file = file.replace(".\\","").replace("\\","/")
+        if(lockedFileNames.includes(file)){
+            addNewLine(new FileRecord(file.split("\\").pop(),file,"-",true))
+        }else{
+            addNewLine(new FileRecord(file.split("\\").pop(),file,"-",false))
+        }
+        
+    }) 
 
 
-// bind Event to Buttons
-document.querySelectorAll('.btn-lock').forEach(element =>{
-    element.addEventListener('click', event =>{
-        console.log("click On Lock", event.target.id, event)
+
+    // bind Event to Buttons
+    document.querySelectorAll('.btn-lock').forEach(element =>{
+        element.addEventListener('click', event =>{
+            console.log("click On Lock", event.target.id, event)
+        })
     })
-})
 
-document.querySelectorAll('.btn-unlock').forEach(element =>{
-    element.addEventListener('click', event =>{
-        console.log("click On Unlock", event.target.id, event)
+    document.querySelectorAll('.btn-unlock').forEach(element =>{
+        element.addEventListener('click', event =>{
+            console.log("click On Unlock", event.target.id, event)
+        })
     })
-})
+}
+
