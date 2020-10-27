@@ -33,16 +33,30 @@ function searchFilter() {
     filter = input.value.toUpperCase();
     table = document.getElementById("myTable");
     tr = table.getElementsByTagName("tr");
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[0];
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
+    if(filter == "/LOCK" || filter == "/L"){
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase()=="-") {
+                    tr[i].style.display = "none";
+                } else {
+                    tr[i].style.display = "";
+                }
+            }       
         }
-      }       
+    }else{
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }       
+        }
     }
   }
 
@@ -105,8 +119,9 @@ function addNewLine(line){
 
 //child_process.exec('git status',{cwd:repoPath},(error,stdout,stderr)=>{console.log(stdout)})
 var lockedFileNames = []
-
+var LockedDict = {}
 child_process.exec('git lfs locks',{cwd:repoPath},(error,stdout,stderr)=>{
+    if (error){console.log("ERROR:",error)}
     console.log(stdout)
     arrayOfLocks = stdout.split("\n")
     
@@ -117,7 +132,8 @@ child_process.exec('git lfs locks',{cwd:repoPath},(error,stdout,stderr)=>{
         element = element.replace("	","//")
         element = element.replace(/\s/g,"")
         arrayOfLocks[index] = element.split("//")
-        lockedFileNames.push(arrayOfLocks[index][0])
+        lockedFileNames[index] = arrayOfLocks[index][0]
+        LockedDict[arrayOfLocks[index][0]] = arrayOfLocks[index][2]
     })
     arrayOfLocks.pop()
     console.log(arrayOfLocks)
@@ -160,7 +176,8 @@ function updateFileRecords () {
     fileListRelative.forEach(file => {
         file = file.replace(".\\","").replace("\\","/")
         if(lockedFileNames.includes(file)){
-            addNewLine(new FileRecord(file.split("\\").pop(),file,"-",true))
+            var owner = arrayOfLocks[lockedFileNames.findIndex((element)=>{return element==file})][1]
+            addNewLine(new FileRecord(file.split("\\").pop(),file,owner,true))
         }else{
             addNewLine(new FileRecord(file.split("\\").pop(),file,"-",false))
         }
