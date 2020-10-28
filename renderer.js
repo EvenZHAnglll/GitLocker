@@ -33,7 +33,7 @@ function searchFilter() {
     filter = input.value.toUpperCase();
     table = document.getElementById("myTable");
     tr = table.getElementsByTagName("tr");
-    if(filter == "/LOCK" || filter == "/L"){
+    if(filter == "LOCKS" || filter == "\\" || filter == "LOCK"){
         for (i = 0; i < tr.length; i++) {
             td = tr[i].getElementsByTagName("td")[1];
             if (td) {
@@ -76,9 +76,9 @@ function addNewLine(line){
         // document.getElementById('table-body').insertAdjacentHTML(
             "beforeend", 
             (line.bLocked?
-            `<tr><td>${line.filePath}</td><td>${line.lockOwner}</td><td><button class="btn-unlock" id="${line.filePath}">unlock</button></td></tr>`
+            `<tr><td class="column-60">${line.filePath}</td><td class="column-20">${line.lockOwner}</td><td class="column-btn"><button class="btn-unlock" id="${line.filePath}">Unlock</button></td></tr>`
             :
-            `<tr><td>${line.filePath}</td><td>${line.lockOwner}</td><td><button class="btn-lock" id="${line.filePath}">lock</button></td></tr>`
+            `<tr><td class="column-60">${line.filePath}</td><td class="column-20">${line.lockOwner}</td><td class="column-btn"><button class="btn-lock" id="${line.filePath}">Lock</button></td></tr>`
         )
     )
 }
@@ -174,7 +174,8 @@ function updateFileRecords () {
     console.log(fileListRelative)
 
     fileListRelative.forEach(file => {
-        file = file.replace(".\\","").replace("\\","/")
+        file = file.replace(".\\","")
+        file = file.replaceAll("\\","/") //.replace("\\","/")
         if(lockedFileNames.includes(file)){
             var owner = arrayOfLocks[lockedFileNames.findIndex((element)=>{return element==file})][1]
             addNewLine(new FileRecord(file.split("\\").pop(),file,owner,true))
@@ -190,12 +191,20 @@ function updateFileRecords () {
     document.querySelectorAll('.btn-lock').forEach(element =>{
         element.addEventListener('click', event =>{
             console.log("click On Lock", event.target.id, event)
+            document.getElementById(event.target.id).innerHTML = '<div class="ld ld-ring ld-spin"></div>'
+            child_process.exec(`git lfs lock ${event.target.id}`,{cwd:repoPath},(error,stdout,stderr)=>{
+                location.reload()
+            })
         })
     })
 
     document.querySelectorAll('.btn-unlock').forEach(element =>{
         element.addEventListener('click', event =>{
             console.log("click On Unlock", event.target.id, event)
+            document.getElementById(event.target.id).innerHTML = '<div class="ld ld-ring ld-spin"></div>'
+            child_process.exec(`git lfs unlock ${event.target.id}`,{cwd:repoPath},(error,stdout,stderr)=>{
+                location.reload()
+            })            
         })
     })
 }

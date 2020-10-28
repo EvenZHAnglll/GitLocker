@@ -5,7 +5,7 @@
     width: 100%;
     box-sizing: border-box;
     font-size: 16px;
-    padding: 12px 20px 12px 40px;
+    padding: 10px 20px 10px 40px;
     border: 1px solid #ddd;
     margin-bottom: 12px;
 }
@@ -14,13 +14,14 @@
     border-collapse: collapse;
     width: 100%;
     border: 1px solid #ddd;
-    font-size: 18px;
+    font-size: 16px;
 }
   
-#myTable th, #myTable td {
+/* #myTable td {
     text-align: left;
-    padding: 12px;
-}
+    padding: 10px;
+
+} */
   
 #myTable tr {
     border-bottom: 1px solid #ddd;
@@ -30,9 +31,16 @@
     background-color: #f1f1f1;
 }
 
-
+.column-btn{
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+    text-align: center;
+    padding: 4px 10px;
+}
 .column-20 {
     width:20%;
+    text-align: center;
 }
 .column-40 {
     width:40%;
@@ -40,7 +48,11 @@
 
 
 .column-60 {
-    width:60%;
+    padding: 10px;
+    text-align: left;
+    width:70%;
+    max-width: 500px;
+    word-wrap: break-word;
 }
 
 
@@ -55,6 +67,7 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+    height: 26px;
 }
 .btn-lock:hover{
     opacity:0.8;
@@ -70,6 +83,7 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+    height: 26px;
 }
 .btn-unlock:hover{
     opacity:0.7;
